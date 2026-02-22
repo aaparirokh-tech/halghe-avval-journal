@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ژورنال حلقه اول فارکس | تریدینگ ربات</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -37,7 +38,7 @@
             font-size: 12px;
             margin-top: 10px;
             padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: px solid rgba(255,255,255,0.1);
         }
         
         .date-box {
@@ -229,7 +230,7 @@
         .mentor-title { color: #00d4ff; font-size: 16px; margin-bottom: 10px; }
         
         .download-btn {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            background: linear-gradient(135deg, #ff4757, #cc0033);
             color: white;
             width: 100%;
             padding: 18px;
@@ -274,8 +275,8 @@
         }
         
         .file-info {
-            background: rgba(0,212,255,0.1);
-            border: 1px solid #00d4ff;
+            background: rgba(255,71,87,0.1);
+            border: 1px solid #ff4757;
             border-radius: 10px;
             padding: 15px;
             margin-top: 15px;
@@ -284,7 +285,7 @@
             text-align: center;
         }
         
-        .file-info strong { color: #00d4ff; }
+        .file-info strong { color: #ff4757; }
     </style>
 </head>
 <body>
@@ -309,7 +310,7 @@
             <div class="welcome-text">
                 به ژورنال معاملاتی حلقه اول فارکس خوش آمدید!<br><br>
                 این ژورنال به شما کمک می‌کند معاملات روزانه خود را تحلیل کنید.<br><br>
-                <strong style="color: #ffd700;">📁 در انتها فایل JSON دریافت می‌کنید</strong>
+                <strong style="color: #ffd700;">📄 در انتها فایل PDF دریافت می‌کنید</strong>
             </div>
             <button class="start-btn" onclick="startJournal()">
                 <span>🚀</span>
@@ -349,15 +350,15 @@
             </div>
             
             <div class="file-info">
-                <strong>💾 نحوه ذخیره:</strong><br>
-                فایل JSON دانلود می‌شود. آن را در پوشه مخصوص ژورنال‌های خود نگهداری کنید.<br>
-                می‌توانید با نرم‌افزارهای ویرایش متن یا اکسل آن را باز کنید.
+                <strong>📄 نحوه ذخیره:</strong><br>
+                فایل PDF دانلود می‌شود. آن را در پوشه مخصوص ژورنال‌های خود نگهداری کنید.<br>
+                قابل چاپ و اشتراک با منتور است.
             </div>
         </div>
         
-        <button class="download-btn hidden" id="downloadBtn" onclick="downloadJournal()">
+        <button class="download-btn hidden" id="downloadBtn" onclick="downloadPDF()">
             <span>📥</span>
-            <span>دانلود فایل ژورنال (JSON)</span>
+            <span>دانلود فایل PDF</span>
         </button>
         
         <button class="new-btn hidden" id="newBtn" onclick="resetJournal()">
@@ -568,10 +569,10 @@
             
             if (answers.mental_state) {
                 if (answers.mental_state.score >= 1) {
-                    strengths.push('✓ وضعیت روحی مناسب برای معامله‌گری');
+                    strengths.push('وضعیت روحی مناسب برای معامله‌گری');
                 } else if (answers.mental_state.score < 0) {
-                    weaknesses.push('✗ وضعیت روحی نامناسب');
-                    suggestions.push('• قبل از معامله مدیتیشن یا استراحت کن');
+                    weaknesses.push('وضعیت روحی نامناسب');
+                    suggestions.push('قبل از معامله مدیتیشن یا استراحت کن');
                     needMentor = true;
                     mentorReasons.push('کنترل استرس و مدیریت روحی');
                 }
@@ -579,19 +580,19 @@
             
             if (answers.tools_usage) {
                 if (answers.tools_usage.score >= 2) {
-                    strengths.push('✓ استفاده صحیح از ابزارهای تریدینگ ربات');
+                    strengths.push('استفاده صحیح از ابزارهای تریدینگ ربات');
                 } else if (answers.tools_usage.score < 0) {
-                    weaknesses.push('✗ عدم استفاده از ربات‌ها و لیمیت‌ها');
-                    suggestions.push('• حتماً از ربات‌ها و اعداد طلایی استفاده کن');
+                    weaknesses.push('عدم استفاده از ربات‌ها و لیمیت‌ها');
+                    suggestions.push('حتماً از ربات‌ها و اعداد طلایی استفاده کن');
                 }
             }
             
             if (answers.setup_formed) {
                 if (answers.setup_formed.score >= 2) {
-                    strengths.push('✓ رعایت اصول ستاپ معاملاتی');
+                    strengths.push('رعایت اصول ستاپ معاملاتی');
                 } else if (answers.setup_formed.score < 0) {
-                    weaknesses.push('✗ ورود بدون ستاپ مشخص');
-                    suggestions.push('• فقط با ستاپ واضح و تایید شده وارد شو');
+                    weaknesses.push('ورود بدون ستاپ مشخص');
+                    suggestions.push('فقط با ستاپ واضح و تایید شده وارد شو');
                     needMentor = true;
                     mentorReasons.push('شناسایی ستاپ معاملاتی');
                 }
@@ -599,10 +600,10 @@
             
             if (answers.sl_tp_defined) {
                 if (answers.sl_tp_defined.score >= 2) {
-                    strengths.push('✓ رعایت مدیریت ریسک (SL/TP)');
+                    strengths.push('رعایت مدیریت ریسک (SL/TP)');
                 } else if (answers.sl_tp_defined.score < 0) {
-                    weaknesses.push('✗ عدم تعیین حد ضرر و سود');
-                    suggestions.push('• قبل از هر ورود SL و TP مشخص کن');
+                    weaknesses.push('عدم تعیین حد ضرر و سود');
+                    suggestions.push('قبل از هر ورود SL و TP مشخص کن');
                     needMentor = true;
                     mentorReasons.push('مدیریت ریسک و سرمایه');
                 }
@@ -610,19 +611,19 @@
             
             if (answers.profit_loss) {
                 if (answers.profit_loss.value === 'سود') {
-                    strengths.push('✓ نتیجه مثبت در معاملات امروز');
+                    strengths.push('نتیجه مثبت در معاملات امروز');
                 } else if (answers.profit_loss.value === 'ضرر') {
-                    weaknesses.push('✗ ضرر در معاملات امروز');
-                    suggestions.push('• معاملات ضررده را در ژورنال بررسی کن');
+                    weaknesses.push('ضرر در معاملات امروز');
+                    suggestions.push('معاملات ضررده را در ژورنال بررسی کن');
                 }
             }
             
             if (answers.daily_limits) {
                 if (answers.daily_limits.score >= 2) {
-                    strengths.push('✓ رعایت محدودیت‌های روزانه تیم');
+                    strengths.push('رعایت محدودیت‌های روزانه تیم');
                 } else if (answers.daily_limits.score < 0) {
-                    weaknesses.push('✗ عدم رعایت محدودیت‌های تیم');
-                    suggestions.push('• به حد ضرر و سود روزانه پایبند باش');
+                    weaknesses.push('عدم رعایت محدودیت‌های تیم');
+                    suggestions.push('به حد ضرر و سود روزانه پایبند باش');
                     needMentor = true;
                     mentorReasons.push('انضباط تیمی');
                 }
@@ -646,15 +647,15 @@
             }
             
             document.getElementById('strengthsList').innerHTML = strengths.length > 0 
-                ? strengths.map(s => `<div class="strength">${s}</div>`).join('')
+                ? strengths.map(s => `<div class="strength">✓ ${s}</div>`).join('')
                 : '<div class="strength">• در حال تحلیل...</div>';
             
             document.getElementById('weaknessesList').innerHTML = weaknesses.length > 0
-                ? weaknesses.map(w => `<div class="weakness">${w}</div>`).join('')
+                ? weaknesses.map(w => `<div class="weakness">✗ ${w}</div>`).join('')
                 : '<div class="strength">• عالی! نقاط ضعف خاصی نیست</div>';
             
             document.getElementById('suggestionsList').innerHTML = suggestions.length > 0
-                ? suggestions.map(s => `<div class="warning-item">${s}</div>`).join('')
+                ? suggestions.map(s => `<div class="warning-item">• ${s}</div>`).join('')
                 : '<div class="strength">• روند عالی! ادامه بده</div>';
             
             const mentorText = needMentor 
@@ -663,49 +664,191 @@
             
             document.getElementById('mentorText').textContent = mentorText;
             
+            // ذخیره برای PDF
+            window.journalResults = {
+                strengths,
+                weaknesses,
+                suggestions,
+                needMentor,
+                mentorText,
+                mentorReasons
+            };
+            
             document.getElementById('resultBox').classList.add('show');
             document.getElementById('downloadBtn').classList.remove('hidden');
             document.getElementById('newBtn').classList.remove('hidden');
         }
         
-        function downloadJournal() {
-            const journalData = {
-                metadata: {
-                    title: "ژورنال معاملاتی حلقه اول فارکس",
-                    date: dateStr,
-                    timestamp: new Date().toISOString(),
-                    trader: "حلقه اول فارکس",
-                    version: "1.0"
-                },
-                answers: answers,
-                analysis: {
-                    strengths: getAnalysisList('strengths'),
-                    weaknesses: getAnalysisList('weaknesses'),
-                    suggestions: getAnalysisList('suggestions'),
-                    needMentor: document.getElementById('mentorText').textContent.includes('بله')
-                }
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // تنظیمات صفحه
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 15;
+            let y = 20;
+            
+            // تابع راست‌چین کردن متن (ساده)
+            const rtlText = (text) => {
+                return text.split('').reverse().join('');
             };
             
-            const jsonStr = JSON.stringify(journalData, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+            // هدر
+            doc.setFillColor(15, 12, 41);
+            doc.rect(0, 0, pageWidth, 40, 'F');
             
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `journal_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            doc.setTextColor(255, 215, 0);
+            doc.setFontSize(20);
+            doc.text('Journal Trading Halghe Aval', pageWidth/2, 20, { align: 'center' });
             
-            alert('✅ فایل ژورنال دانلود شد!\n\nفایل را در پوشه مخصوص ژورنال‌های خود ذخیره کنید.');
-        }
-        
-        function getAnalysisList(type) {
-            const element = document.getElementById(type + 'List');
-            if (!element) return [];
-            const items = element.querySelectorAll('div');
-            return Array.from(items).map(item => item.textContent.trim());
+            doc.setTextColor(0, 212, 255);
+            doc.setFontSize(12);
+            doc.text('Trading Bot Collection', pageWidth/2, 30, { align: 'center' });
+            
+            y = 50;
+            
+            // تاریخ
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.text(`Date: ${dateStr}`, margin, y);
+            y += 10;
+            
+            // خط جداکننده
+            doc.setDrawColor(255, 215, 0);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 10;
+            
+            // سوالات و جواب‌ها
+            doc.setFontSize(14);
+            doc.setTextColor(0, 212, 255);
+            doc.text('Trading Journal Questions', margin, y);
+            y += 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            
+            questions.forEach((q, index) => {
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                const ans = answers[q.key];
+                const answerText = ans ? (ans.text || ans.value) : '-';
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${index + 1}. ${q.q}`, margin, y);
+                y += 6;
+                
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(80, 80, 80);
+                
+                // شکستن خط برای جواب‌های طولانی
+                const splitAnswer = doc.splitTextToSize(`Answer: ${answerText}`, pageWidth - 2*margin - 10);
+                doc.text(splitAnswer, margin + 5, y);
+                y += splitAnswer.length * 5 + 5;
+                
+                doc.setTextColor(0, 0, 0);
+            });
+            
+            // صفحه جدید برای تحلیل
+            doc.addPage();
+            y = 20;
+            
+            // عنوان تحلیل
+            doc.setFillColor(15, 12, 41);
+            doc.rect(0, 0, pageWidth, 25, 'F');
+            doc.setTextColor(255, 215, 0);
+            doc.setFontSize(16);
+            doc.text('Daily Analysis', pageWidth/2, 15, { align: 'center' });
+            
+            y = 35;
+            
+            const results = window.journalResults;
+            
+            // نقاط قوت
+            if (results.strengths.length > 0) {
+                doc.setTextColor(0, 255, 136);
+                doc.setFontSize(12);
+                doc.text('Strengths:', margin, y);
+                y += 8;
+                
+                doc.setTextColor(0, 100, 0);
+                doc.setFontSize(10);
+                results.strengths.forEach(s => {
+                    const text = s.replace('✓ ', '');
+                    const lines = doc.splitTextToSize(`+ ${text}`, pageWidth - 2*margin - 5);
+                    doc.text(lines, margin + 5, y);
+                    y += lines.length * 5 + 3;
+                });
+                y += 5;
+            }
+            
+            // نقاط ضعف
+            if (results.weaknesses.length > 0) {
+                if (y > 220) { doc.addPage(); y = 20; }
+                
+                doc.setTextColor(255, 71, 87);
+                doc.setFontSize(12);
+                doc.text('Areas for Improvement:', margin, y);
+                y += 8;
+                
+                doc.setTextColor(150, 0, 0);
+                doc.setFontSize(10);
+                results.weaknesses.forEach(w => {
+                    const text = w.replace('✗ ', '');
+                    const lines = doc.splitTextToSize(`- ${text}`, pageWidth - 2*margin - 5);
+                    doc.text(lines, margin + 5, y);
+                    y += lines.length * 5 + 3;
+                });
+                y += 5;
+            }
+            
+            // پیشنهادات
+            if (results.suggestions.length > 0) {
+                if (y > 220) { doc.addPage(); y = 20; }
+                
+                doc.setTextColor(0, 212, 255);
+                doc.setFontSize(12);
+                doc.text('Educational Recommendations:', margin, y);
+                y += 8;
+                
+                doc.setTextColor(0, 100, 150);
+                doc.setFontSize(10);
+                results.suggestions.forEach(s => {
+                    const text = s.replace('• ', '');
+                    const lines = doc.splitTextToSize(`> ${text}`, pageWidth - 2*margin - 5);
+                    doc.text(lines, margin + 5, y);
+                    y += lines.length * 5 + 3;
+                });
+                y += 10;
+            }
+            
+            // مشاوره
+            if (y > 200) { doc.addPage(); y = 20; }
+            
+            doc.setFillColor(0, 212, 255);
+            doc.rect(margin, y, pageWidth - 2*margin, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(11);
+            
+            const mentorLines = doc.splitTextToSize(results.mentorText, pageWidth - 2*margin - 10);
+            doc.text(mentorLines, margin + 5, y + 10);
+            
+            // فوتر
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text(`Halghe Aval Forex - Page ${i} of ${pageCount}`, pageWidth/2, 285, { align: 'center' });
+            }
+            
+            // دانلود
+            const fileName = `Journal_HalgheAval_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+            
+            alert('✅ فایل PDF دانلود شد!\n\nفایل را در پوشه Downloads خود بیابید.');
         }
         
         function resetJournal() {
@@ -719,6 +862,7 @@
             currentQuestion = 0;
             answers = {};
             currentSelection = null;
+            window.journalResults = null;
         }
     </script>
 </body>
