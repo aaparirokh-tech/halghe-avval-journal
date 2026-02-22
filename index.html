@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ژورنال حلقه اول فارکس | تریدینگ ربات</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -38,7 +37,7 @@
             font-size: 12px;
             margin-top: 10px;
             padding-top: 10px;
-            border-top: px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         
         .date-box {
@@ -173,67 +172,152 @@
         
         .answer-text { color: white; font-size: 14px; line-height: 1.6; }
         
-        .result-box {
-            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,212,255,0.15));
-            border: 2px solid #ffd700;
+        .hidden { display: none !important; }
+        
+        .welcome-text {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        /* صفحه نتیجه برای اسکرین‌شات */
+        .result-page {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             border-radius: 20px;
-            padding: 25px;
-            margin-top: 20px;
-            display: none;
+            padding: 30px;
+            margin: 20px 0;
+            border: 3px solid #ffd700;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
         
-        .result-box.show { display: block; animation: fadeIn 0.5s; }
+        .result-header {
+            text-align: center;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
         
-        .result-title { color: #ffd700; font-size: 20px; margin-bottom: 20px; text-align: center; }
+        .result-logo {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
         
-        .section-title {
+        .result-title-main {
+            color: #ffd700;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .result-subtitle {
             color: #00d4ff;
+            font-size: 14px;
+        }
+        
+        .result-date {
+            background: rgba(255,215,0,0.2);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #ffd700;
             font-size: 16px;
-            margin: 15px 0 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(0,212,255,0.3);
         }
         
-        .strength {
-            background: rgba(0,255,136,0.15);
-            border-right: 4px solid #00ff88;
-            padding: 12px 15px;
+        .result-section {
+            margin-bottom: 25px;
+        }
+        
+        .result-section-title {
+            color: #00d4ff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(0,212,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px;
             margin-bottom: 10px;
-            border-radius: 10px;
+            border-right: 4px solid;
         }
         
-        .weakness {
-            background: rgba(255,71,87,0.15);
-            border-right: 4px solid #ff4757;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
+        .result-item.question {
+            border-color: #00d4ff;
         }
         
-        .warning-item {
-            background: rgba(255,215,0,0.15);
-            border-right: 4px solid #ffd700;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
+        .result-item.strength {
+            border-color: #00ff88;
+            background: rgba(0,255,136,0.1);
         }
         
-        .mentor-box {
-            background: rgba(0,212,255,0.2);
+        .result-item.weakness {
+            border-color: #ff4757;
+            background: rgba(255,71,87,0.1);
+        }
+        
+        .result-item.suggestion {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.1);
+        }
+        
+        .result-item-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .result-item-text {
+            font-size: 15px;
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .result-mentor-box {
+            background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(255,215,0,0.2));
             border: 2px solid #00d4ff;
             border-radius: 15px;
             padding: 20px;
-            margin-top: 20px;
             text-align: center;
+            margin-top: 25px;
         }
         
-        .mentor-title { color: #00d4ff; font-size: 16px; margin-bottom: 10px; }
+        .result-mentor-title {
+            color: #ffd700;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
         
-        .download-btn {
+        .result-mentor-text {
+            color: white;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+        
+        .result-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+            font-size: 12px;
+        }
+        
+        .screenshot-btn {
             background: linear-gradient(135deg, #ff4757, #cc0033);
             color: white;
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             border: none;
             border-radius: 15px;
             font-size: 18px;
@@ -244,10 +328,12 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            animation: pulse 2s infinite;
         }
         
-        .download-btn:hover {
-            transform: scale(1.02);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
         
         .new-btn {
@@ -263,45 +349,37 @@
             margin-top: 15px;
         }
         
-        .icon { font-size: 28px; }
-        
-        .hidden { display: none !important; }
-        
-        .welcome-text {
-            text-align: center;
-            color: #ccc;
-            margin-bottom: 20px;
-            line-height: 1.8;
-        }
-        
-        .file-info {
-            background: rgba(255,71,87,0.1);
-            border: 1px solid #ff4757;
+        .hint-box {
+            background: rgba(255,215,0,0.1);
+            border: 1px dashed #ffd700;
             border-radius: 10px;
             padding: 15px;
             margin-top: 15px;
-            font-size: 13px;
-            color: #ccc;
             text-align: center;
+            color: #ccc;
+            font-size: 13px;
         }
         
-        .file-info strong { color: #ff4757; }
+        .hint-box strong {
+            color: #ffd700;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <!-- هدر -->
+        <div class="header" id="mainHeader">
             <div class="logo">🤖</div>
             <h1>ژورنال معاملاتی</h1>
             <div class="subtitle">حلقه اول فارکس</div>
             <div class="group-name">مجموعه تریدینگ ربات</div>
         </div>
         
-        <div class="date-box">
+        <div class="date-box" id="dateBox">
             <h2 id="currentDate">امروز</h2>
         </div>
         
-        <div class="progress-bar">
+        <div class="progress-bar" id="progressBarContainer">
             <div class="progress-fill" id="progressBar"></div>
         </div>
         
@@ -310,7 +388,7 @@
             <div class="welcome-text">
                 به ژورنال معاملاتی حلقه اول فارکس خوش آمدید!<br><br>
                 این ژورنال به شما کمک می‌کند معاملات روزانه خود را تحلیل کنید.<br><br>
-                <strong style="color: #ffd700;">📄 در انتها فایل PDF دریافت می‌کنید</strong>
+                <strong style="color: #ffd700;">📸 در انتها صفحه نتیجه را اسکرین‌شات بگیرید</strong>
             </div>
             <button class="start-btn" onclick="startJournal()">
                 <span>🚀</span>
@@ -332,42 +410,81 @@
         
         <div id="answersContainer"></div>
         
-        <div class="result-box" id="resultBox">
-            <h3 class="result-title">🎯 تحلیل روزانه</h3>
-            
-            <div class="section-title">💪 نقاط قوت:</div>
-            <div id="strengthsList"></div>
-            
-            <div class="section-title">⚠️ نقاط نیاز به بهبود:</div>
-            <div id="weaknessesList"></div>
-            
-            <div class="section-title">🎓 توصیه‌های آموزشی:</div>
-            <div id="suggestionsList"></div>
-            
-            <div class="mentor-box" id="mentorBox">
-                <div class="mentor-title">👨‍🏫 نیاز به مشاوره با منتور شخصی؟</div>
-                <p id="mentorText" style="color: white; font-size: 14px;"></p>
+        <!-- صفحه نتیجه کامل برای اسکرین‌شات -->
+        <div id="resultScreen" class="hidden">
+            <div class="result-page" id="resultPage">
+                <div class="result-header">
+                    <div class="result-logo">🤖</div>
+                    <div class="result-title-main">ژورنال معاملاتی</div>
+                    <div class="result-subtitle">حلقه اول فارکس | Trading Bot</div>
+                </div>
+                
+                <div class="result-date" id="resultDate">
+                    تاریخ: ۱۴۰۴/۱۱/۲۳
+                </div>
+                
+                <div class="result-section">
+                    <div class="result-section-title">
+                        <span>📝</span>
+                        <span>پاسخ‌های شما</span>
+                    </div>
+                    <div id="resultQuestions"></div>
+                </div>
+                
+                <div class="result-section">
+                    <div class="result-section-title">
+                        <span>💪</span>
+                        <span>نقاط قوت</span>
+                    </div>
+                    <div id="resultStrengths"></div>
+                </div>
+                
+                <div class="result-section">
+                    <div class="result-section-title">
+                        <span>⚠️</span>
+                        <span>نقاط نیاز به بهبود</span>
+                    </div>
+                    <div id="resultWeaknesses"></div>
+                </div>
+                
+                <div class="result-section">
+                    <div class="result-section-title">
+                        <span>🎓</span>
+                        <span>توصیه‌های آموزشی</span>
+                    </div>
+                    <div id="resultSuggestions"></div>
+                </div>
+                
+                <div class="result-mentor-box">
+                    <div class="result-mentor-title">👨‍🏫 وضعیت مشاوره</div>
+                    <div class="result-mentor-text" id="resultMentorText"></div>
+                </div>
+                
+                <div class="result-footer">
+                    Generated by Halghe Aval Forex Trading Bot<br>
+                    برای ذخیره، اسکرین‌شات بگیرید 📸
+                </div>
             </div>
             
-            <div class="file-info">
-                <strong>📄 نحوه ذخیره:</strong><br>
-                فایل PDF دانلود می‌شود. آن را در پوشه مخصوص ژورنال‌های خود نگهداری کنید.<br>
-                قابل چاپ و اشتراک با منتور است.
+            <div class="hint-box">
+                <strong>💡 راهنمای ذخیره:</strong><br>
+                • گوشی: دکمه پاور + ولوم پایین را همزمان بزنید<br>
+                • آیفون: دکمه پاور + ولوم بالا<br>
+                • تصویر در گالری ذخیره می‌شود
             </div>
+            
+            <button class="screenshot-btn" onclick="prepareForScreenshot()">
+                <span>📸</span>
+                <span>آماده‌سازی برای اسکرین‌شات</span>
+            </button>
+            
+            <button class="new-btn" onclick="resetJournal()">
+                🔄 ژورنال جدید
+            </button>
         </div>
-        
-        <button class="download-btn hidden" id="downloadBtn" onclick="downloadPDF()">
-            <span>📥</span>
-            <span>دانلود فایل PDF</span>
-        </button>
-        
-        <button class="new-btn hidden" id="newBtn" onclick="resetJournal()">
-            🔄 ژورنال جدید
-        </button>
     </div>
 
     <script>
-        // سوالات چند گزینه‌ای
         const questions = [
             {
                 q: "از لحاظ روحی و روانی امروز چطور بودی؟",
@@ -455,7 +572,6 @@
         let answers = {};
         let currentSelection = null;
         
-        // تنظیم تاریخ
         const today = new Date();
         const dateStr = today.toLocaleDateString('fa-IR', {
             weekday: 'long',
@@ -471,9 +587,7 @@
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('questionScreen').classList.remove('hidden');
             document.getElementById('answersContainer').innerHTML = '';
-            document.getElementById('resultBox').classList.remove('show');
-            document.getElementById('downloadBtn').classList.add('hidden');
-            document.getElementById('newBtn').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
             
             showQuestion();
         }
@@ -560,309 +674,147 @@
         function showResults() {
             document.getElementById('progressBar').style.width = '100%';
             document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
+            document.getElementById('dateBox').classList.add('hidden');
+            document.getElementById('progressBarContainer').classList.add('hidden');
+            document.getElementById('answersContainer').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
             
+            // پر کردن صفحه نتیجه
+            document.getElementById('resultDate').textContent = `تاریخ: ${dateStr}`;
+            
+            // سوالات و جواب‌ها
+            const questionsHtml = questions.map((q, i) => {
+                const ans = answers[q.key];
+                const answerText = ans ? (ans.text || ans.value) : '-';
+                return `
+                    <div class="result-item question">
+                        <div class="result-item-label">سوال ${i + 1}</div>
+                        <div class="result-item-text"><strong>${q.q}</strong></div>
+                        <div class="result-item-text" style="color: #00d4ff; margin-top: 5px;">→ ${answerText}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('resultQuestions').innerHTML = questionsHtml;
+            
+            // تحلیل
             const strengths = [];
             const weaknesses = [];
             const suggestions = [];
             let needMentor = false;
             let mentorReasons = [];
             
-            if (answers.mental_state) {
-                if (answers.mental_state.score >= 1) {
-                    strengths.push('وضعیت روحی مناسب برای معامله‌گری');
-                } else if (answers.mental_state.score < 0) {
-                    weaknesses.push('وضعیت روحی نامناسب');
-                    suggestions.push('قبل از معامله مدیتیشن یا استراحت کن');
-                    needMentor = true;
-                    mentorReasons.push('کنترل استرس و مدیریت روحی');
-                }
+            if (answers.mental_state?.score >= 1) strengths.push('وضعیت روحی مناسب برای معامله‌گری');
+            else if (answers.mental_state?.score < 0) {
+                weaknesses.push('وضعیت روحی نامناسب');
+                suggestions.push('قبل از معامله مدیتیشن یا استراحت کن');
+                needMentor = true;
+                mentorReasons.push('کنترل استرس');
             }
             
-            if (answers.tools_usage) {
-                if (answers.tools_usage.score >= 2) {
-                    strengths.push('استفاده صحیح از ابزارهای تریدینگ ربات');
-                } else if (answers.tools_usage.score < 0) {
-                    weaknesses.push('عدم استفاده از ربات‌ها و لیمیت‌ها');
-                    suggestions.push('حتماً از ربات‌ها و اعداد طلایی استفاده کن');
-                }
+            if (answers.tools_usage?.score >= 2) strengths.push('استفاده صحیح از ابزارهای تریدینگ ربات');
+            else if (answers.tools_usage?.score < 0) {
+                weaknesses.push('عدم استفاده از ربات‌ها و لیمیت‌ها');
+                suggestions.push('حتماً از ربات‌ها و اعداد طلایی استفاده کن');
             }
             
-            if (answers.setup_formed) {
-                if (answers.setup_formed.score >= 2) {
-                    strengths.push('رعایت اصول ستاپ معاملاتی');
-                } else if (answers.setup_formed.score < 0) {
-                    weaknesses.push('ورود بدون ستاپ مشخص');
-                    suggestions.push('فقط با ستاپ واضح و تایید شده وارد شو');
-                    needMentor = true;
-                    mentorReasons.push('شناسایی ستاپ معاملاتی');
-                }
+            if (answers.setup_formed?.score >= 2) strengths.push('رعایت اصول ستاپ معاملاتی');
+            else if (answers.setup_formed?.score < 0) {
+                weaknesses.push('ورود بدون ستاپ مشخص');
+                suggestions.push('فقط با ستاپ واضح و تایید شده وارد شو');
+                needMentor = true;
+                mentorReasons.push('شناسایی ستاپ');
             }
             
-            if (answers.sl_tp_defined) {
-                if (answers.sl_tp_defined.score >= 2) {
-                    strengths.push('رعایت مدیریت ریسک (SL/TP)');
-                } else if (answers.sl_tp_defined.score < 0) {
-                    weaknesses.push('عدم تعیین حد ضرر و سود');
-                    suggestions.push('قبل از هر ورود SL و TP مشخص کن');
-                    needMentor = true;
-                    mentorReasons.push('مدیریت ریسک و سرمایه');
-                }
+            if (answers.sl_tp_defined?.score >= 2) strengths.push('رعایت مدیریت ریسک (SL/TP)');
+            else if (answers.sl_tp_defined?.score < 0) {
+                weaknesses.push('عدم تعیین حد ضرر و سود');
+                suggestions.push('قبل از هر ورود SL و TP مشخص کن');
+                needMentor = true;
+                mentorReasons.push('مدیریت ریسک');
             }
             
-            if (answers.profit_loss) {
-                if (answers.profit_loss.value === 'سود') {
-                    strengths.push('نتیجه مثبت در معاملات امروز');
-                } else if (answers.profit_loss.value === 'ضرر') {
-                    weaknesses.push('ضرر در معاملات امروز');
-                    suggestions.push('معاملات ضررده را در ژورنال بررسی کن');
-                }
+            if (answers.profit_loss?.value === 'سود') strengths.push('نتیجه مثبت در معاملات امروز');
+            else if (answers.profit_loss?.value === 'ضرر') {
+                weaknesses.push('ضرر در معاملات امروز');
+                suggestions.push('معاملات ضررده را در ژورنال بررسی کن');
             }
             
-            if (answers.daily_limits) {
-                if (answers.daily_limits.score >= 2) {
-                    strengths.push('رعایت محدودیت‌های روزانه تیم');
-                } else if (answers.daily_limits.score < 0) {
-                    weaknesses.push('عدم رعایت محدودیت‌های تیم');
-                    suggestions.push('به حد ضرر و سود روزانه پایبند باش');
-                    needMentor = true;
-                    mentorReasons.push('انضباط تیمی');
-                }
+            if (answers.daily_limits?.score >= 2) strengths.push('رعایت محدودیت‌های روزانه تیم');
+            else if (answers.daily_limits?.score < 0) {
+                weaknesses.push('عدم رعایت محدودیت‌های تیم');
+                suggestions.push('به حد ضرر و سود روزانه پایبند باش');
+                needMentor = true;
+                mentorReasons.push('انضباط تیمی');
             }
             
-            if (answers.mentor_need) {
-                if (answers.mentor_need.score < 0) {
-                    needMentor = true;
-                    mentorReasons.push('درخواست مشاوره فوری');
-                } else if (answers.mentor_need.score === 0) {
-                    mentorReasons.push('سوالات آموزشی');
-                }
+            if (answers.mentor_need?.score < 0) {
+                needMentor = true;
+                mentorReasons.push('درخواست مشاوره فوری');
+            } else if (answers.mentor_need?.score === 0) {
+                mentorReasons.push('سوالات آموزشی');
             }
             
-            if (answers.notes && answers.notes.value && answers.notes.value.trim() !== '') {
-                if (answers.notes.value.toLowerCase().includes('مشکل') || 
-                    answers.notes.value.toLowerCase().includes('سوال')) {
-                    needMentor = true;
-                    mentorReasons.push('مشکلات ذکر شده در توضیحات');
-                }
-            }
+            // نمایش نقاط قوت
+            document.getElementById('resultStrengths').innerHTML = strengths.length > 0 
+                ? strengths.map(s => `
+                    <div class="result-item strength">
+                        <div class="result-item-text">✓ ${s}</div>
+                    </div>
+                `).join('')
+                : '<div class="result-item"><div class="result-item-text">-</div></div>';
             
-            document.getElementById('strengthsList').innerHTML = strengths.length > 0 
-                ? strengths.map(s => `<div class="strength">✓ ${s}</div>`).join('')
-                : '<div class="strength">• در حال تحلیل...</div>';
+            // نمایش نقاط ضعف
+            document.getElementById('resultWeaknesses').innerHTML = weaknesses.length > 0
+                ? weaknesses.map(w => `
+                    <div class="result-item weakness">
+                        <div class="result-item-text">✗ ${w}</div>
+                    </div>
+                `).join('')
+                : '<div class="result-item"><div class="result-item-text" style="color: #00ff88;">✓ عالی! نقاط ضعف خاصی نیست</div></div>';
             
-            document.getElementById('weaknessesList').innerHTML = weaknesses.length > 0
-                ? weaknesses.map(w => `<div class="weakness">✗ ${w}</div>`).join('')
-                : '<div class="strength">• عالی! نقاط ضعف خاصی نیست</div>';
+            // نمایش پیشنهادات
+            document.getElementById('resultSuggestions').innerHTML = suggestions.length > 0
+                ? suggestions.map(s => `
+                    <div class="result-item suggestion">
+                        <div class="result-item-text">• ${s}</div>
+                    </div>
+                `).join('')
+                : '<div class="result-item"><div class="result-item-text" style="color: #ffd700;">• روند عالی! ادامه بده</div></div>';
             
-            document.getElementById('suggestionsList').innerHTML = suggestions.length > 0
-                ? suggestions.map(s => `<div class="warning-item">• ${s}</div>`).join('')
-                : '<div class="strength">• روند عالی! ادامه بده</div>';
-            
+            // مشاوره
             const mentorText = needMentor 
                 ? `✅ بله، با منتور شخصی تماس بگیر.\n\n📋 موارد:\n${mentorReasons.map(r => '• ' + r).join('\n')}`
                 : '✓ فعلاً نیازی نیست، ولی منتور در دسترس است.';
             
-            document.getElementById('mentorText').textContent = mentorText;
+            document.getElementById('resultMentorText').textContent = mentorText;
             
-            // ذخیره برای PDF
-            window.journalResults = {
-                strengths,
-                weaknesses,
-                suggestions,
-                needMentor,
-                mentorText,
-                mentorReasons
-            };
-            
-            document.getElementById('resultBox').classList.add('show');
-            document.getElementById('downloadBtn').classList.remove('hidden');
-            document.getElementById('newBtn').classList.remove('hidden');
+            // اسکرول به بالا
+            window.scrollTo(0, 0);
         }
         
-        async function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+        function prepareForScreenshot() {
+            // مخفی کردن دکمه‌ها برای اسکرین‌شات تمیز
+            const btn = document.querySelector('.screenshot-btn');
+            const newBtn = document.querySelector('.new-btn');
+            const hint = document.querySelector('.hint-box');
             
-            // تنظیمات صفحه
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 15;
-            let y = 20;
+            btn.style.display = 'none';
+            newBtn.style.display = 'none';
+            hint.style.display = 'none';
             
-            // تابع راست‌چین کردن متن (ساده)
-            const rtlText = (text) => {
-                return text.split('').reverse().join('');
-            };
+            alert('📸 صفحه آماده است!\n\nاسکرین‌شات بگیرید:\n• اندروید: دکمه پاور + ولوم پایین\n• آیفون: دکمه پاور + ولوم بالا\n\nبعد از ذخیره، صفحه رفرش می‌شود.');
             
-            // هدر
-            doc.setFillColor(15, 12, 41);
-            doc.rect(0, 0, pageWidth, 40, 'F');
-            
-            doc.setTextColor(255, 215, 0);
-            doc.setFontSize(20);
-            doc.text('Journal Trading Halghe Aval', pageWidth/2, 20, { align: 'center' });
-            
-            doc.setTextColor(0, 212, 255);
-            doc.setFontSize(12);
-            doc.text('Trading Bot Collection', pageWidth/2, 30, { align: 'center' });
-            
-            y = 50;
-            
-            // تاریخ
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(11);
-            doc.text(`Date: ${dateStr}`, margin, y);
-            y += 10;
-            
-            // خط جداکننده
-            doc.setDrawColor(255, 215, 0);
-            doc.line(margin, y, pageWidth - margin, y);
-            y += 10;
-            
-            // سوالات و جواب‌ها
-            doc.setFontSize(14);
-            doc.setTextColor(0, 212, 255);
-            doc.text('Trading Journal Questions', margin, y);
-            y += 10;
-            
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
-            
-            questions.forEach((q, index) => {
-                if (y > 250) {
-                    doc.addPage();
-                    y = 20;
-                }
-                
-                const ans = answers[q.key];
-                const answerText = ans ? (ans.text || ans.value) : '-';
-                
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${index + 1}. ${q.q}`, margin, y);
-                y += 6;
-                
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(80, 80, 80);
-                
-                // شکستن خط برای جواب‌های طولانی
-                const splitAnswer = doc.splitTextToSize(`Answer: ${answerText}`, pageWidth - 2*margin - 10);
-                doc.text(splitAnswer, margin + 5, y);
-                y += splitAnswer.length * 5 + 5;
-                
-                doc.setTextColor(0, 0, 0);
-            });
-            
-            // صفحه جدید برای تحلیل
-            doc.addPage();
-            y = 20;
-            
-            // عنوان تحلیل
-            doc.setFillColor(15, 12, 41);
-            doc.rect(0, 0, pageWidth, 25, 'F');
-            doc.setTextColor(255, 215, 0);
-            doc.setFontSize(16);
-            doc.text('Daily Analysis', pageWidth/2, 15, { align: 'center' });
-            
-            y = 35;
-            
-            const results = window.journalResults;
-            
-            // نقاط قوت
-            if (results.strengths.length > 0) {
-                doc.setTextColor(0, 255, 136);
-                doc.setFontSize(12);
-                doc.text('Strengths:', margin, y);
-                y += 8;
-                
-                doc.setTextColor(0, 100, 0);
-                doc.setFontSize(10);
-                results.strengths.forEach(s => {
-                    const text = s.replace('✓ ', '');
-                    const lines = doc.splitTextToSize(`+ ${text}`, pageWidth - 2*margin - 5);
-                    doc.text(lines, margin + 5, y);
-                    y += lines.length * 5 + 3;
-                });
-                y += 5;
-            }
-            
-            // نقاط ضعف
-            if (results.weaknesses.length > 0) {
-                if (y > 220) { doc.addPage(); y = 20; }
-                
-                doc.setTextColor(255, 71, 87);
-                doc.setFontSize(12);
-                doc.text('Areas for Improvement:', margin, y);
-                y += 8;
-                
-                doc.setTextColor(150, 0, 0);
-                doc.setFontSize(10);
-                results.weaknesses.forEach(w => {
-                    const text = w.replace('✗ ', '');
-                    const lines = doc.splitTextToSize(`- ${text}`, pageWidth - 2*margin - 5);
-                    doc.text(lines, margin + 5, y);
-                    y += lines.length * 5 + 3;
-                });
-                y += 5;
-            }
-            
-            // پیشنهادات
-            if (results.suggestions.length > 0) {
-                if (y > 220) { doc.addPage(); y = 20; }
-                
-                doc.setTextColor(0, 212, 255);
-                doc.setFontSize(12);
-                doc.text('Educational Recommendations:', margin, y);
-                y += 8;
-                
-                doc.setTextColor(0, 100, 150);
-                doc.setFontSize(10);
-                results.suggestions.forEach(s => {
-                    const text = s.replace('• ', '');
-                    const lines = doc.splitTextToSize(`> ${text}`, pageWidth - 2*margin - 5);
-                    doc.text(lines, margin + 5, y);
-                    y += lines.length * 5 + 3;
-                });
-                y += 10;
-            }
-            
-            // مشاوره
-            if (y > 200) { doc.addPage(); y = 20; }
-            
-            doc.setFillColor(0, 212, 255);
-            doc.rect(margin, y, pageWidth - 2*margin, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(11);
-            
-            const mentorLines = doc.splitTextToSize(results.mentorText, pageWidth - 2*margin - 10);
-            doc.text(mentorLines, margin + 5, y + 10);
-            
-            // فوتر
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.setTextColor(128, 128, 128);
-                doc.text(`Halghe Aval Forex - Page ${i} of ${pageCount}`, pageWidth/2, 285, { align: 'center' });
-            }
-            
-            // دانلود
-            const fileName = `Journal_HalgheAval_${new Date().toISOString().split('T')[0]}.pdf`;
-            doc.save(fileName);
-            
-            alert('✅ فایل PDF دانلود شد!\n\nفایل را در پوشه Downloads خود بیابید.');
+            // بعد از ۳ ثانیه برگرداندن دکمه‌ها
+            setTimeout(() => {
+                btn.style.display = 'flex';
+                newBtn.style.display = 'block';
+                hint.style.display = 'block';
+            }, 3000);
         }
         
         function resetJournal() {
-            document.getElementById('startScreen').classList.remove('hidden');
-            document.getElementById('answersContainer').innerHTML = '';
-            document.getElementById('resultBox').classList.remove('show');
-            document.getElementById('downloadBtn').classList.add('hidden');
-            document.getElementById('newBtn').classList.add('hidden');
-            document.getElementById('progressBar').style.width = '0%';
-            
-            currentQuestion = 0;
-            answers = {};
-            currentSelection = null;
-            window.journalResults = null;
+            location.reload();
         }
     </script>
 </body>
