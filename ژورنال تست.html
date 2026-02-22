@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ژورنال حلقه اول فارکس | تریدینگ ربات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255,215,0,0.1);
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+        }
+        
+        .logo {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            color: #ffd700;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+        }
+        
+        .group-name {
+            color: #888;
+            font-size: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* صفحه درخواست دسترسی */
+        .permission-screen {
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .permission-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .permission-title {
+            color: #ffd700;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .permission-text {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 2;
+            margin-bottom: 25px;
+        }
+        
+        .permission-btn {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(0,212,255,0.3);
+        }
+        
+        .permission-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .permission-denied {
+            background: rgba(255,71,87,0.2);
+            border: 2px solid #ff4757;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .date-box {
+            background: rgba(255,215,0,0.15);
+            border: 1px solid #ffd700;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .date-box h2 {
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .voice-btn {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0f0c29;
+            box-shadow: 0 5px 20px rgba(255,215,0,0.3);
+        }
+        
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .recording-btn {
+            background: linear-gradient(135deg, #ff4757, #cc0033);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,71,87,0.7); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(255,71,87,0); }
+        }
+        
+        .question-box {
+            background: rgba(0,212,255,0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .question-number {
+            color: #ffd700;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: white;
+        }
+        
+        .status {
+            text-align: center;
+            color: #00d4ff;
+            font-size: 14px;
+            margin-bottom: 20px;
+            min-height: 25px;
+            font-weight: bold;
+        }
+        
+        .answer-box {
+            background: rgba(255,215,0,0.1);
+            border-right: 4px solid #ffd700;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .answer-box.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .answer-label {
+            color: #ffd700;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .answer-text {
+            color: white;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,212,255,0.15));
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .result-title {
+            color: #ffd700;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .section-title {
+            color: #00d4ff;
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0,212,255,0.3);
+        }
+        
+        .strength {
+            background: rgba(0,255,136,0.15);
+            border-right: 4px solid #00ff88;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        
+        .weakness {
+            background: rgba(255,71,87,0.15);
+            border-right: 4px solid #ff4757;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        
+        .warning-item {
+            background: rgba(255,215,0,0.15);
+            border-right: 4px solid #ffd700;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        
+        .mentor-box {
+            background: rgba(0,212,255,0.2);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .mentor-title {
+            color: #00d4ff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #0f0c29;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .history-btn {
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #00d4ff);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .icon {
+            font-size: 28px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .browser-hint {
+            background: rgba(255,215,0,0.1);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        .browser-hint strong {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🤖</div>
+            <h1>ژورنال معاملاتی</h1>
+            <div class="subtitle">حلقه اول فارکس</div>
+            <div class="group-name">مجموعه تریدینگ ربات</div>
+        </div>
+        
+        <!-- صفحه درخواست دسترسی -->
+        <div class="permission-screen" id="permissionScreen">
+            <div class="permission-icon">🎙️</div>
+            <h2 class="permission-title">دسترسی به میکروفن</h2>
+            <p class="permission-text">
+                برای استفاده از دستیار صوتی ژورنال،<br>
+                نیاز به دسترسی به میکروفن داریم.<br><br>
+                ✅ صحبت می‌کنی، تایپ نمی‌کنی<br>
+                ✅ سوالات صوتی پرسیده می‌شه<br>
+                ✅ جوابات ضبط و تحلیل می‌شه
+            </p>
+            <button class="permission-btn" onclick="requestMicrophone()">
+                <span>🚀</span>
+                <span>اجازه دسترسی بده</span>
+            </button>
+            
+            <div class="permission-denied" id="permissionDenied">
+                <p style="color: #ff4757; margin-bottom: 10px;">❌ دسترسی رد شد</p>
+                <p style="font-size: 13px; color: #ccc;">
+                    لطفاً به تنظیمات مرورگر برو و دسترسی میکروفن رو فعال کن.<br>
+                    یا صفحه رو ریفرش کن و دوباره امتحان کن.
+                </p>
+            </div>
+            
+            <div class="browser-hint">
+                <strong>💡 راهنما:</strong><br>
+                Chrome: روی 🔒 کنار آدرس کلیک کن → Site settings → Microphone → Allow<br>
+                Safari: Preferences → Websites → Microphone → Allow
+            </div>
+        </div>
+        
+        <!-- صفحه اصلی ژورنال (مخفی در ابتدا) -->
+        <div id="mainApp" class="hidden">
+            <div class="date-box">
+                <h2 id="currentDate">امروز</h2>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            
+            <button class="voice-btn start-btn" id="startBtn" onclick="startJournal()">
+                <span class="icon">🎙️</span>
+                <span>شروع ژورنال صوتی</span>
+            </button>
+            
+            <div class="question-box hidden" id="questionBox">
+                <div class="question-number" id="questionNumber">سوال ۱ از ۸</div>
+                <p class="question-text" id="questionText">آماده‌ای؟</p>
+            </div>
+            
+            <p class="status" id="status"></p>
+            
+            <div id="answersContainer"></div>
+            
+            <div class="result-box" id="resultBox">
+                <h3 class="result-title">🎯 تحلیل روزانه</h3>
+                
+                <div class="section-title">💪 نقاط قوت:</div>
+                <div id="strengthsList"></div>
+                
+                <div class="section-title">⚠️ نقاط نیاز به بهبود:</div>
+                <div id="weaknessesList"></div>
+                
+                <div class="section-title">🎓 توصیه‌های آموزشی:</div>
+                <div id="suggestionsList"></div>
+                
+                <div class="mentor-box" id="mentorBox">
+                    <div class="mentor-title">👨‍🏫 نیاز به مشاوره با منتور شخصی؟</div>
+                    <p id="mentorText" style="color: white; font-size: 14px;"></p>
+                </div>
+            </div>
+            
+            <button class="save-btn hidden" id="saveBtn" onclick="saveJournal()">
+                💾 ذخیره ژورنال روزانه
+            </button>
+            
+            <button class="history-btn" id="historyBtn" onclick="toggleHistory()">
+                📚 تاریخچه ژورنال‌ها
+            </button>
+            
+            <div id="historyContainer" style="display: none; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // سوالات اختصاصی گروه حلقه اول فارکس
+        const questions = [
+            {
+                q: "سلام تریدر عزیز! از لحاظ روحی و روانی امروز خوب بودی؟ حالت چطور بود؟",
+                key: "mental_state",
+                type: "mental"
+            },
+            {
+                q: "آیا از ربات‌های معاملاتی یا اعداد طلایی و لیمیت‌های ما استفاده کردی؟",
+                key: "tools_usage",
+                type: "tools"
+            },
+            {
+                q: "ستاپ معاملاتی مشخص و واضح برای ورود به معامله تشکیل شده بود؟",
+                key: "setup_formed",
+                type: "setup"
+            },
+            {
+                q: "استاپ لاس و تارگت مشخص برای ستاپ معاملاتیت تعیین کرده بودی؟",
+                key: "sl_tp_defined",
+                type: "risk"
+            },
+            {
+                q: "امروز سود کردی یا ضرر؟ دقیقاً علت سود یا ضرر کردنت چی بوده؟",
+                key: "profit_loss_reason",
+                type: "analysis"
+            },
+            {
+                q: "حد ضرر و حد سود روزانه رو که با تیم مشخص کردیم، رعایت کردی؟",
+                key: "daily_limits",
+                type: "discipline"
+            },
+            {
+                q: "فکر می‌کنی لازم داری از منتور شخصیت مشاوره بگیری؟ در چه موردی؟",
+                key: "mentor_need",
+                type: "mentor"
+            },
+            {
+                q: "هر سوال یا مشکلی در مورد استراتژی‌ات داری بگو، تا با منتور شخصیت در میون بذارم.",
+                key: "questions_problems",
+                type: "feedback"
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let answers = {};
+        let recognition;
+        let synthesis;
+        let isRecording = false;
+        let microphoneAllowed = false;
+        
+        // تنظیم تاریخ
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('fa-IR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = dateStr;
+        
+        // بارگذاری تاریخچه
+        loadHistory();
+        
+        // درخواست دسترسی به میکروفن
+        async function requestMicrophone() {
+            try {
+                // درخواست دسترسی از مرورگر
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // اجازه داده شد
+                microphoneAllowed = true;
+                stream.getTracks().forEach(track => track.stop()); // قطع موقت
+                
+                // مخفی کردن صفحه دسترسی و نمایش اپ
+                document.getElementById('permissionScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                // پیام خوش‌آمد
+                speak('دسترسی داده شد. روی دکمه شروع کلیک کن.');
+                
+            } catch (error) {
+                console.error('خطا:', error);
+                document.getElementById('permissionDenied').style.display = 'block';
+                
+                if (error.name === 'NotAllowedError') {
+                    alert('❌ دسترسی به میکروفن رد شد.\n\nلطفاً:\n1. به تنظیمات مرورگر برو\n2. دسترسی میکروفن رو فعال کن\n3. صفحه رو ریفرش کن');
+                } else if (error.name === 'NotFoundError') {
+                    alert('❌ میکروفن پیدا نشد.\n\nلطفاً مطمئن شو میکروفن وصل هست.');
+                }
+            }
+        }
+        
+        // بررسی خودکار دسترسی (بعضی مرورگرها)
+        function checkMicrophonePermission() {
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'microphone' }).then(result => {
+                    if (result.state === 'granted') {
+                        // قبلاً اجازه داده شده
+                        document.getElementById('permissionScreen').classList.add('hidden');
+                        document.getElementById('mainApp').classList.remove('hidden');
+                        microphoneAllowed = true;
+                    }
+                });
+            }
+        }
+        
+        // بررسی در شروع
+        checkMicrophonePermission();
+        
+        function initSpeech() {
+            if (!microphoneAllowed) {
+                alert('لطفاً اول دسترسی میکروفن رو بده.');
+                return false;
+            }
+            
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'fa-IR';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    handleAnswer(transcript);
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('خطا:', event.error);
+                    document.getElementById('status').textContent = '❌ خطا در تشخیص. دوباره می‌گم...';
+                    stopRecording();
+                    
+                    // تکرار سوال
+                    setTimeout(() => {
+                        speak(questions[currentQuestion].q);
+                        setTimeout(startRecording, 3000);
+                    }, 2000);
+                };
+                
+                recognition.onend = function() {
+                    stopRecording();
+                };
+                
+                return true;
+            } else {
+                alert('مرورگر شما پشتیبانی نمی‌کند. از Chrome یا Safari استفاده کن.');
+                return false;
+            }
+        }
+        
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                synthesis = window.speechSynthesis;
+                synthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'fa-IR';
+                utterance.rate = 0.85;
+                utterance.pitch = 1;
+                synthesis.speak(utterance);
+            }
+        }
+        
+        function startJournal() {
+            if (!initSpeech()) return;
+            
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('answersContainer').innerHTML = '';
+            document.getElementById('resultBox').classList.remove('show');
+            document.getElementById('saveBtn').classList.add('hidden');
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('historyBtn').classList.add('hidden');
+            document.getElementById('questionBox').classList.remove('hidden');
+            
+            askQuestion();
+        }
+        
+        function askQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+            
+            const q = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `سوال ${currentQuestion + 1} از ${questions.length}`;
+            document.getElementById('questionText').textContent = q.q;
+            
+            speak(q.q);
+            updateProgress();
+            
+            setTimeout(() => {
+                startRecording();
+            }, 3000);
+        }
+        
+        async function startRecording() {
+            if (!recognition) return;
+            
+            try {
+                // بررسی مجدد دسترسی
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                
+                isRecording = true;
+                recognition.start();
+                document.getElementById('status').textContent = '🎙️ در حال ضبط... صحبت کن';
+                document.getElementById('questionBox').style.borderColor = '#ff4757';
+                document.getElementById('questionBox').style.boxShadow = '0 0 20px rgba(255,71,87,0.3)';
+                
+            } catch (error) {
+                document.getElementById('status').textContent = '❌ میکروفن غیرفعال شد. دوباره اجازه بده.';
+                alert('لطفاً دوباره دسترسی میکروفن رو بده.');
+            }
+        }
+        
+        function stopRecording() {
+            isRecording = false;
+            document.getElementById('status').textContent = '';
+            document.getElementById('questionBox').style.borderColor = '#00d4ff';
+            document.getElementById('questionBox').style.boxShadow = 'none';
+        }
+        
+        function handleAnswer(text) {
+            const q = questions[currentQuestion];
+            answers[q.key] = text;
+            
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'answer-box show';
+            answerDiv.innerHTML = `
+                <div class="answer-label">سوال ${currentQuestion + 1}: ${getQuestionTitle(q.key)}</div>
+                <div class="answer-text">${text}</div>
+            `;
+            document.getElementById('answersContainer').appendChild(answerDiv);
+            answerDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            currentQuestion++;
+            setTimeout(() => askQuestion(), 1500);
+        }
+        
+        function getQuestionTitle(key) {
+            const titles = {
+                mental_state: 'وضعیت روحی',
+                tools_usage: 'استفاده از ابزارها',
+                setup_formed: 'ستاپ معاملاتی',
+                sl_tp_defined: 'مدیریت ریسک',
+                profit_loss_reason: 'تحلیل سود/ضرر',
+                daily_limits: 'محدودیت روزانه',
+                mentor_need: 'نیاز به منتور',
+                questions_problems: 'سوالات و مشکلات'
+            };
+            return titles[key] || key;
+        }
+        
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function showResults() {
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('questionBox').classList.add('hidden');
+            
+            // تحلیل (کد قبلی)
+            const strengths = [];
+            const weaknesses = [];
+            const suggestions = [];
+            let needMentor = false;
+            let mentorReasons = [];
+            
+            if (answers.mental_state) {
+                const text = answers.mental_state.toLowerCase();
+                if (text.includes('خوب') || text.includes('عالی') || text.includes('آرام')) {
+                    strengths.push('✓ وضعیت روحی مناسب برای معامله‌گری');
+                } else if (text.includes('بد') || text.includes('استرس') || text.includes('عصبی')) {
+                    weaknesses.push('✗ وضعیت روحی نامناسب');
+                    suggestions.push('• قبل از معامله مدیتیشن کن');
+                    needMentor = true;
+                    mentorReasons.push('کنترل استرس');
+                }
+            }
+            
+            if (answers.tools_usage) {
+                const text = answers.tools_usage.toLowerCase();
+                if (text.includes('بله') || text.includes('آره') || text.includes('ربات')) {
+                    strengths.push('✓ استفاده صحیح از ابزارهای تریدینگ ربات');
+                } else {
+                    weaknesses.push('✗ عدم استفاده از ربات‌ها');
+                    suggestions.push('• از ربات‌ها و لیمیت‌ها استفاده کن');
+                }
+            }
+            
+            if (answers.setup_formed) {
+                const text = answers.setup_formed.toLowerCase();
+                if (text.includes('بله') || text.includes('بود')) {
+                    strengths.push('✓ رعایت اصول ستاپ معاملاتی');
+                } else {
+                    weaknesses.push('✗ ورود بدون ستاپ مشخص');
+                    suggestions.push('• فقط با ستاپ مشخص وارد شو');
+                    needMentor = true;
+                    mentorReasons.push('شناسایی ستاپ');
+                }
+            }
+            
+            if (answers.sl_tp_defined) {
+                const text = answers.sl_tp_defined.toLowerCase();
+                if (text.includes('بله') || text.includes('داشتم')) {
+                    strengths.push('✓ رعایت مدیریت ریسک');
+                } else {
+                    weaknesses.push('✗ عدم تعیین SL/TP');
+                    suggestions.push('• قبل از ورود SL و TP مشخص کن');
+                    needMentor = true;
+                    mentorReasons.push('مدیریت ریسک');
+                }
+            }
+            
+            if (answers.daily_limits) {
+                const text = answers.daily_limits.toLowerCase();
+                if (text.includes('بله') || text.includes('رعایت')) {
+                    strengths.push('✓ رعایت محدودیت‌های روزانه تیم');
+                } else {
+                    weaknesses.push('✗ عدم رعایت محدودیت‌ها');
+                    needMentor = true;
+                    mentorReasons.push('انضباط تیمی');
+                }
+            }
+            
+            if (answers.mentor_need) {
+                const text = answers.mentor_need.toLowerCase();
+                if (text.includes('بله') || text.includes('لازم') || text.includes('نیاز')) {
+                    needMentor = true;
+                    mentorReasons.push(answers.mentor_need);
+                }
+            }
+            
+            document.getElementById('strengthsList').innerHTML = strengths.length > 0 
+                ? strengths.map(s => `<div class="strength">${s}</div>`).join('')
+                : '<div class="strength">• در حال تحلیل...</div>';
+            
+            document.getElementById('weaknessesList').innerHTML = weaknesses.length > 0
+                ? weaknesses.map(w => `<div class="weakness">${w}</div>`).join('')
+                : '<div class="strength">• عالی! نقاط ضعف خاصی نیست</div>';
+            
+            document.getElementById('suggestionsList').innerHTML = suggestions.length > 0
+                ? suggestions.map(s => `<div class="warning-item">${s}</div>`).join('')
+                : '<div class="strength">• روند عالی!</div>';
+            
+            const mentorText = needMentor 
+                ? `✅ بله، با منتور شخصی تماس بگیر.\n\n📋 موارد:\n${mentorReasons.map(r => '• ' + r).join('\n')}`
+                : '✓ فعلاً نیازی نیست، ولی در دسترس هستیم.';
+            
+            document.getElementById('mentorText').textContent = mentorText;
+            
+            document.getElementById('resultBox').classList.add('show');
+            document.getElementById('saveBtn').classList.remove('hidden');
+            document.getElementById('historyBtn').classList.remove('hidden');
+            
+            const summary = `تحلیل تکمیل شد. ${strengths.length} نقطه قوت و ${weaknesses.length} نقطه ضعف. ${needMentor ? 'نیاز به مشاوره داری.' : 'آفرین!'}`;
+            speak(summary);
+        }
+        
+        function saveJournal() {
+            const journal = {
+                date: dateStr,
+                timestamp: new Date().toISOString(),
+                answers: answers
+            };
+            
+            let history = JSON.parse(localStorage.getItem('halgheAvvalJournals') || '[]');
+            history.unshift(journal);
+            if (history.length > 30) history = history.slice(0, 30);
+            
+            localStorage.setItem('halgheAvvalJournals', JSON.stringify(history));
+            
+            alert('✅ ژورنال ذخیره شد!\n\nمنتور شخصی بررسی می‌کند.');
+            
+            // ریست
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('startBtn').innerHTML = '<span class="icon">🔄</span><span>ژورنال جدید</span>';
+            document.getElementById('saveBtn').classList.add('hidden');
+            document.getElementById('questionBox').classList.add('hidden');
+            document.getElementById('answersContainer').innerHTML = '';
+            document.getElementById('progressBar').style.width = '0%';
+            
+            loadHistory();
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('halgheAvvalJournals') || '[]');
+            const container = document.getElementById('historyContainer');
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">هنوز ژورنالی ثبت نشده</p>';
+                return;
+            }
+            
+            container.innerHTML = history.map(j => `
+                <div style="background: rgba(255,215,0,0.1); border: 1px solid #ffd700; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                    <div style="color: #ffd700; font-weight: bold; margin-bottom: 10px;">📅 ${j.date}</div>
+                    <div style="font-size: 13px; color: #ccc;">وضعیت: ${j.answers.mental_state?.substring(0, 25) || '-'}...</div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleHistory() {
+            const container = document.getElementById('historyContainer');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
