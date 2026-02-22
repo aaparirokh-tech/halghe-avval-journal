@@ -1,19 +1,725 @@
-{
-  "metadata": {
-    "title": "ژورنال معاملاتی حلقه اول فارکس",
-    "date": "پنجشنبه ۲۳ بهمن ۱۴۰۴",
-    "timestamp": "2025-02-11T...",
-    "trader": "حلقه اول فارکس"
-  },
-  "answers": {
-    "mental_state": { "value": "عالی", "score": 2 },
-    "tools_usage": { "value": "بله کامل", "score": 2 },
-    ...
-  },
-  "analysis": {
-    "strengths": ["✓ وضعیت روحی مناسب..."],
-    "weaknesses": [],
-    "suggestions": [],
-    "needMentor": false
-  }
-}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ژورنال حلقه اول فارکس | تریدینگ ربات</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container { max-width: 500px; margin: 0 auto; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255,215,0,0.1);
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+        }
+        
+        .logo { font-size: 40px; margin-bottom: 10px; }
+        
+        h1 { color: #ffd700; font-size: 22px; margin-bottom: 5px; }
+        
+        .subtitle { color: #00d4ff; font-size: 14px; }
+        
+        .group-name {
+            color: #888;
+            font-size: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .date-box {
+            background: rgba(255,215,0,0.15);
+            border: 1px solid #ffd700;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .date-box h2 { color: #ffd700; font-size: 18px; }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #00d4ff);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .question-box {
+            background: rgba(0,212,255,0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .question-number { color: #ffd700; font-size: 14px; margin-bottom: 10px; }
+        
+        .question-text { font-size: 18px; line-height: 1.7; color: white; margin-bottom: 20px; }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: right;
+        }
+        
+        .option-btn:hover {
+            background: rgba(0,212,255,0.2);
+            border-color: #00d4ff;
+            transform: translateX(-5px);
+        }
+        
+        .option-btn.selected {
+            background: rgba(0,212,255,0.3);
+            border-color: #00d4ff;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        
+        .text-input::placeholder { color: #888; }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        .next-btn, .start-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0f0c29;
+            box-shadow: 0 5px 20px rgba(255,215,0,0.3);
+        }
+        
+        .next-btn:hover, .start-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .next-btn:disabled {
+            background: #555;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .answer-box {
+            background: rgba(255,215,0,0.1);
+            border-right: 4px solid #ffd700;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .answer-label { color: #ffd700; font-size: 12px; margin-bottom: 5px; font-weight: bold; }
+        
+        .answer-text { color: white; font-size: 14px; line-height: 1.6; }
+        
+        .result-box {
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,212,255,0.15));
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box.show { display: block; animation: fadeIn 0.5s; }
+        
+        .result-title { color: #ffd700; font-size: 20px; margin-bottom: 20px; text-align: center; }
+        
+        .section-title {
+            color: #00d4ff;
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0,212,255,0.3);
+        }
+        
+        .strength {
+            background: rgba(0,255,136,0.15);
+            border-right: 4px solid #00ff88;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        
+        .weakness {
+            background: rgba(255,71,87,0.15);
+            border-right: 4px solid #ff4757;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        
+        .warning-item {
+            background: rgba(255,215,0,0.15);
+            border-right: 4px solid #ffd700;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        
+        .mentor-box {
+            background: rgba(0,212,255,0.2);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .mentor-title { color: #00d4ff; font-size: 16px; margin-bottom: 10px; }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .new-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #0f0c29;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .icon { font-size: 28px; }
+        
+        .hidden { display: none !important; }
+        
+        .welcome-text {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .file-info {
+            background: rgba(0,212,255,0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #ccc;
+            text-align: center;
+        }
+        
+        .file-info strong { color: #00d4ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🤖</div>
+            <h1>ژورنال معاملاتی</h1>
+            <div class="subtitle">حلقه اول فارکس</div>
+            <div class="group-name">مجموعه تریدینگ ربات</div>
+        </div>
+        
+        <div class="date-box">
+            <h2 id="currentDate">امروز</h2>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <!-- صفحه شروع -->
+        <div id="startScreen">
+            <div class="welcome-text">
+                به ژورنال معاملاتی حلقه اول فارکس خوش آمدید!<br><br>
+                این ژورنال به شما کمک می‌کند معاملات روزانه خود را تحلیل کنید.<br><br>
+                <strong style="color: #ffd700;">📁 در انتها فایل JSON دریافت می‌کنید</strong>
+            </div>
+            <button class="start-btn" onclick="startJournal()">
+                <span>🚀</span>
+                <span>شروع ژورنال</span>
+            </button>
+        </div>
+        
+        <!-- صفحه سوالات -->
+        <div id="questionScreen" class="hidden">
+            <div class="question-box">
+                <div class="question-number" id="questionNumber">سوال ۱ از ۸</div>
+                <p class="question-text" id="questionText">سوال اینجا نمایش داده می‌شود</p>
+                <div class="options-container" id="optionsContainer"></div>
+            </div>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                سوال بعدی →
+            </button>
+        </div>
+        
+        <div id="answersContainer"></div>
+        
+        <div class="result-box" id="resultBox">
+            <h3 class="result-title">🎯 تحلیل روزانه</h3>
+            
+            <div class="section-title">💪 نقاط قوت:</div>
+            <div id="strengthsList"></div>
+            
+            <div class="section-title">⚠️ نقاط نیاز به بهبود:</div>
+            <div id="weaknessesList"></div>
+            
+            <div class="section-title">🎓 توصیه‌های آموزشی:</div>
+            <div id="suggestionsList"></div>
+            
+            <div class="mentor-box" id="mentorBox">
+                <div class="mentor-title">👨‍🏫 نیاز به مشاوره با منتور شخصی؟</div>
+                <p id="mentorText" style="color: white; font-size: 14px;"></p>
+            </div>
+            
+            <div class="file-info">
+                <strong>💾 نحوه ذخیره:</strong><br>
+                فایل JSON دانلود می‌شود. آن را در پوشه مخصوص ژورنال‌های خود نگهداری کنید.<br>
+                می‌توانید با نرم‌افزارهای ویرایش متن یا اکسل آن را باز کنید.
+            </div>
+        </div>
+        
+        <button class="download-btn hidden" id="downloadBtn" onclick="downloadJournal()">
+            <span>📥</span>
+            <span>دانلود فایل ژورنال (JSON)</span>
+        </button>
+        
+        <button class="new-btn hidden" id="newBtn" onclick="resetJournal()">
+            🔄 ژورنال جدید
+        </button>
+    </div>
+
+    <script>
+        // سوالات چند گزینه‌ای
+        const questions = [
+            {
+                q: "از لحاظ روحی و روانی امروز چطور بودی؟",
+                key: "mental_state",
+                type: "options",
+                options: [
+                    { value: "عالی", text: "😊 عالی - کاملاً آرام و آماده", score: 2 },
+                    { value: "خوب", text: "🙂 خوب - روال عادی", score: 1 },
+                    { value: "متوسط", text: "😐 متوسط - کمی استرس دارم", score: 0 },
+                    { value: "بد", text: "😰 بد - استرس زیاد / عصبی هستم", score: -1 }
+                ]
+            },
+            {
+                q: "آیا از ربات‌های معاملاتی یا اعداد طلایی استفاده کردی؟",
+                key: "tools_usage",
+                type: "options",
+                options: [
+                    { value: "بله کامل", text: "✅ بله، کاملاً استفاده کردم", score: 2 },
+                    { value: "بله جزئی", text: "⚠️ بله، ولی ناقص", score: 1 },
+                    { value: "خیر", text: "❌ خیر، استفاده نکردم", score: -1 }
+                ]
+            },
+            {
+                q: "ستاپ معاملاتی مشخص برای ورود داشتی؟",
+                key: "setup_formed",
+                type: "options",
+                options: [
+                    { value: "بله واضح", text: "✅ بله، ستاپ کاملاً واضح بود", score: 2 },
+                    { value: "بله ناقص", text: "⚠️ بله، ولی مطمئن نبودم", score: 1 },
+                    { value: "خیر", text: "❌ خیر، بدون ستاپ وارد شدم", score: -1 },
+                    { value: "معامله نکردم", text: "⛔ امروز معامله نکردم", score: 0 }
+                ]
+            },
+            {
+                q: "استاپ لاس و تارگت مشخص تعیین کرده بودی؟",
+                key: "sl_tp_defined",
+                type: "options",
+                options: [
+                    { value: "بله هر دو", text: "✅ بله، SL و TP مشخص بود", score: 2 },
+                    { value: "فقط SL", text: "⚠️ فقط SL داشتم", score: 1 },
+                    { value: "خیر", text: "❌ خیر، تعیین نکرده بودم", score: -1 },
+                    { value: "معامله نکردم", text: "⛔ معامله نکردم", score: 0 }
+                ]
+            },
+            {
+                q: "نتایج امروز چطور بود؟",
+                key: "profit_loss",
+                type: "options",
+                options: [
+                    { value: "سود", text: "📈 سود کردم", score: 1 },
+                    { value: "ضرر", text: "📉 ضرر کردم", score: -1 },
+                    { value: "متوازن", text: "⚖️ سود و ضرر داشتم", score: 0 },
+                    { value: "بدون معامله", text: "⛔ معامله نکردم", score: 0 }
+                ]
+            },
+            {
+                q: "حد ضرر و سود روزانه تیم را رعایت کردی؟",
+                key: "daily_limits",
+                type: "options",
+                options: [
+                    { value: "بله کامل", text: "✅ بله، کاملاً رعایت کردم", score: 2 },
+                    { value: "بله با خطا", text: "⚠️ بله، ولی یه بار خطا کردم", score: 1 },
+                    { value: "خیر", text: "❌ خیر، رعایت نکردم", score: -1 }
+                ]
+            },
+            {
+                q: "نیاز به مشاوره با منتور شخصی داری؟",
+                key: "mentor_need",
+                type: "options",
+                options: [
+                    { value: "بله ضروری", text: "🆘 بله، ضروری است", score: -1 },
+                    { value: "بله سوال دارم", text: "❓ بله، چند سوال دارم", score: 0 },
+                    { value: "خیر", text: "✅ خیر، فعلاً نیازی نیست", score: 1 }
+                ]
+            },
+            {
+                q: "توضیحات تکمیلی (اختیاری):",
+                key: "notes",
+                type: "text",
+                placeholder: "هر نکته یا سوالی داری اینجا بنویس..."
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let answers = {};
+        let currentSelection = null;
+        
+        // تنظیم تاریخ
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('fa-IR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = dateStr;
+        
+        function startJournal() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('questionScreen').classList.remove('hidden');
+            document.getElementById('answersContainer').innerHTML = '';
+            document.getElementById('resultBox').classList.remove('show');
+            document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('newBtn').classList.add('hidden');
+            
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+            
+            const q = questions[currentQuestion];
+            currentSelection = null;
+            
+            document.getElementById('questionNumber').textContent = `سوال ${currentQuestion + 1} از ${questions.length}`;
+            document.getElementById('questionText').textContent = q.q;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            if (q.type === 'options') {
+                q.options.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt.text;
+                    btn.onclick = () => selectOption(index, opt);
+                    container.appendChild(btn);
+                });
+            } else if (q.type === 'text') {
+                const input = document.createElement('textarea');
+                input.className = 'text-input';
+                input.rows = 4;
+                input.placeholder = q.placeholder;
+                input.oninput = (e) => {
+                    currentSelection = { value: e.target.value, score: 0, text: e.target.value || 'بدون توضیحات' };
+                    document.getElementById('nextBtn').disabled = false;
+                };
+                container.appendChild(input);
+            }
+            
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'مشاهده نتایج 🎯' : 'سوال بعدی →';
+            
+            updateProgress();
+        }
+        
+        function selectOption(index, option) {
+            currentSelection = option;
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, i) => {
+                if (i === index) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+            
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function nextQuestion() {
+            if (!currentSelection) return;
+            
+            const q = questions[currentQuestion];
+            answers[q.key] = currentSelection;
+            
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'answer-box';
+            answerDiv.innerHTML = `
+                <div class="answer-label">${q.q}</div>
+                <div class="answer-text">${currentSelection.text || currentSelection.value}</div>
+            `;
+            document.getElementById('answersContainer').appendChild(answerDiv);
+            
+            currentQuestion++;
+            showQuestion();
+        }
+        
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function showResults() {
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('questionScreen').classList.add('hidden');
+            
+            const strengths = [];
+            const weaknesses = [];
+            const suggestions = [];
+            let needMentor = false;
+            let mentorReasons = [];
+            
+            if (answers.mental_state) {
+                if (answers.mental_state.score >= 1) {
+                    strengths.push('✓ وضعیت روحی مناسب برای معامله‌گری');
+                } else if (answers.mental_state.score < 0) {
+                    weaknesses.push('✗ وضعیت روحی نامناسب');
+                    suggestions.push('• قبل از معامله مدیتیشن یا استراحت کن');
+                    needMentor = true;
+                    mentorReasons.push('کنترل استرس و مدیریت روحی');
+                }
+            }
+            
+            if (answers.tools_usage) {
+                if (answers.tools_usage.score >= 2) {
+                    strengths.push('✓ استفاده صحیح از ابزارهای تریدینگ ربات');
+                } else if (answers.tools_usage.score < 0) {
+                    weaknesses.push('✗ عدم استفاده از ربات‌ها و لیمیت‌ها');
+                    suggestions.push('• حتماً از ربات‌ها و اعداد طلایی استفاده کن');
+                }
+            }
+            
+            if (answers.setup_formed) {
+                if (answers.setup_formed.score >= 2) {
+                    strengths.push('✓ رعایت اصول ستاپ معاملاتی');
+                } else if (answers.setup_formed.score < 0) {
+                    weaknesses.push('✗ ورود بدون ستاپ مشخص');
+                    suggestions.push('• فقط با ستاپ واضح و تایید شده وارد شو');
+                    needMentor = true;
+                    mentorReasons.push('شناسایی ستاپ معاملاتی');
+                }
+            }
+            
+            if (answers.sl_tp_defined) {
+                if (answers.sl_tp_defined.score >= 2) {
+                    strengths.push('✓ رعایت مدیریت ریسک (SL/TP)');
+                } else if (answers.sl_tp_defined.score < 0) {
+                    weaknesses.push('✗ عدم تعیین حد ضرر و سود');
+                    suggestions.push('• قبل از هر ورود SL و TP مشخص کن');
+                    needMentor = true;
+                    mentorReasons.push('مدیریت ریسک و سرمایه');
+                }
+            }
+            
+            if (answers.profit_loss) {
+                if (answers.profit_loss.value === 'سود') {
+                    strengths.push('✓ نتیجه مثبت در معاملات امروز');
+                } else if (answers.profit_loss.value === 'ضرر') {
+                    weaknesses.push('✗ ضرر در معاملات امروز');
+                    suggestions.push('• معاملات ضررده را در ژورنال بررسی کن');
+                }
+            }
+            
+            if (answers.daily_limits) {
+                if (answers.daily_limits.score >= 2) {
+                    strengths.push('✓ رعایت محدودیت‌های روزانه تیم');
+                } else if (answers.daily_limits.score < 0) {
+                    weaknesses.push('✗ عدم رعایت محدودیت‌های تیم');
+                    suggestions.push('• به حد ضرر و سود روزانه پایبند باش');
+                    needMentor = true;
+                    mentorReasons.push('انضباط تیمی');
+                }
+            }
+            
+            if (answers.mentor_need) {
+                if (answers.mentor_need.score < 0) {
+                    needMentor = true;
+                    mentorReasons.push('درخواست مشاوره فوری');
+                } else if (answers.mentor_need.score === 0) {
+                    mentorReasons.push('سوالات آموزشی');
+                }
+            }
+            
+            if (answers.notes && answers.notes.value && answers.notes.value.trim() !== '') {
+                if (answers.notes.value.toLowerCase().includes('مشکل') || 
+                    answers.notes.value.toLowerCase().includes('سوال')) {
+                    needMentor = true;
+                    mentorReasons.push('مشکلات ذکر شده در توضیحات');
+                }
+            }
+            
+            document.getElementById('strengthsList').innerHTML = strengths.length > 0 
+                ? strengths.map(s => `<div class="strength">${s}</div>`).join('')
+                : '<div class="strength">• در حال تحلیل...</div>';
+            
+            document.getElementById('weaknessesList').innerHTML = weaknesses.length > 0
+                ? weaknesses.map(w => `<div class="weakness">${w}</div>`).join('')
+                : '<div class="strength">• عالی! نقاط ضعف خاصی نیست</div>';
+            
+            document.getElementById('suggestionsList').innerHTML = suggestions.length > 0
+                ? suggestions.map(s => `<div class="warning-item">${s}</div>`).join('')
+                : '<div class="strength">• روند عالی! ادامه بده</div>';
+            
+            const mentorText = needMentor 
+                ? `✅ بله، با منتور شخصی تماس بگیر.\n\n📋 موارد:\n${mentorReasons.map(r => '• ' + r).join('\n')}`
+                : '✓ فعلاً نیازی نیست، ولی منتور در دسترس است.';
+            
+            document.getElementById('mentorText').textContent = mentorText;
+            
+            document.getElementById('resultBox').classList.add('show');
+            document.getElementById('downloadBtn').classList.remove('hidden');
+            document.getElementById('newBtn').classList.remove('hidden');
+        }
+        
+        function downloadJournal() {
+            const journalData = {
+                metadata: {
+                    title: "ژورنال معاملاتی حلقه اول فارکس",
+                    date: dateStr,
+                    timestamp: new Date().toISOString(),
+                    trader: "حلقه اول فارکس",
+                    version: "1.0"
+                },
+                answers: answers,
+                analysis: {
+                    strengths: getAnalysisList('strengths'),
+                    weaknesses: getAnalysisList('weaknesses'),
+                    suggestions: getAnalysisList('suggestions'),
+                    needMentor: document.getElementById('mentorText').textContent.includes('بله')
+                }
+            };
+            
+            const jsonStr = JSON.stringify(journalData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `journal_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ فایل ژورنال دانلود شد!\n\nفایل را در پوشه مخصوص ژورنال‌های خود ذخیره کنید.');
+        }
+        
+        function getAnalysisList(type) {
+            const element = document.getElementById(type + 'List');
+            if (!element) return [];
+            const items = element.querySelectorAll('div');
+            return Array.from(items).map(item => item.textContent.trim());
+        }
+        
+        function resetJournal() {
+            document.getElementById('startScreen').classList.remove('hidden');
+            document.getElementById('answersContainer').innerHTML = '';
+            document.getElementById('resultBox').classList.remove('show');
+            document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('newBtn').classList.add('hidden');
+            document.getElementById('progressBar').style.width = '0%';
+            
+            currentQuestion = 0;
+            answers = {};
+            currentSelection = null;
+        }
+    </script>
+</body>
+</html>
