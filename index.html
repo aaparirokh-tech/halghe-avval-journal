@@ -40,6 +40,27 @@
             border-top: 1px solid rgba(255,255,255,0.1);
         }
         
+        .stats-box {
+            background: rgba(0,212,255,0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stats-number {
+            color: #ffd700;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .stats-label {
+            color: #888;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
         .date-box {
             background: rgba(255,215,0,0.15);
             border: 1px solid #ffd700;
@@ -129,7 +150,7 @@
             border-color: #00d4ff;
         }
         
-        .next-btn, .start-btn {
+        .next-btn, .start-btn, .history-btn {
             width: 100%;
             padding: 18px;
             border: none;
@@ -138,12 +159,22 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .start-btn {
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #0f0c29;
             box-shadow: 0 5px 20px rgba(255,215,0,0.3);
         }
         
-        .next-btn:hover, .start-btn:hover {
+        .history-btn {
+            background: rgba(0,212,255,0.2);
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+        }
+        
+        .next-btn:hover, .start-btn:hover, .history-btn:hover {
             transform: scale(1.02);
         }
         
@@ -363,6 +394,91 @@
         .hint-box strong {
             color: #ffd700;
         }
+        
+        /* تاریخچه */
+        .history-page {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .history-title {
+            color: #ffd700;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ffd700;
+        }
+        
+        .history-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: rgba(0,212,255,0.1);
+            border-color: #00d4ff;
+            transform: translateX(-5px);
+        }
+        
+        .history-date {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .history-summary {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .history-score {
+            display: inline-block;
+            background: rgba(0,212,255,0.2);
+            color: #00d4ff;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .empty-history {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+        }
+        
+        .expiry-notice {
+            background: rgba(255,71,87,0.1);
+            border: 1px solid #ff4757;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+            color: #ff4757;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -375,29 +491,38 @@
             <div class="group-name">مجموعه تریدینگ ربات</div>
         </div>
         
-        <div class="date-box" id="dateBox">
-            <h2 id="currentDate">امروز</h2>
-        </div>
-        
-        <div class="progress-bar" id="progressBarContainer">
-            <div class="progress-fill" id="progressBar"></div>
-        </div>
-        
-        <!-- صفحه شروع -->
-        <div id="startScreen">
-            <div class="welcome-text">
-                به ژورنال معاملاتی حلقه اول فارکس خوش آمدید!<br><br>
-                این ژورنال به شما کمک می‌کند معاملات روزانه خود را تحلیل کنید.<br><br>
-                <strong style="color: #ffd700;">📸 در انتها صفحه نتیجه را اسکرین‌شات بگیرید</strong>
+        <!-- صفحه اصلی -->
+        <div id="homeScreen">
+            <div class="stats-box">
+                <div class="stats-number" id="journalCount">0</div>
+                <div class="stats-label">ژورنال ثبت شده (۳۰ روز اخیر)</div>
             </div>
+            
+            <div class="date-box">
+                <h2 id="currentDate">امروز</h2>
+            </div>
+            
             <button class="start-btn" onclick="startJournal()">
                 <span>🚀</span>
-                <span>شروع ژورنال</span>
+                <span>شروع ژورنال جدید</span>
             </button>
+            
+            <button class="history-btn" onclick="showHistory()">
+                <span>📚</span>
+                <span>مشاهده تاریخچه</span>
+            </button>
+            
+            <div class="expiry-notice">
+                ⚠️ ژورنال‌ها به مدت ۳۰ روز در حافظه مرورگر ذخیره می‌شوند
+            </div>
         </div>
         
         <!-- صفحه سوالات -->
         <div id="questionScreen" class="hidden">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            
             <div class="question-box">
                 <div class="question-number" id="questionNumber">سوال ۱ از ۸</div>
                 <p class="question-text" id="questionText">سوال اینجا نمایش داده می‌شود</p>
@@ -410,7 +535,7 @@
         
         <div id="answersContainer"></div>
         
-        <!-- صفحه نتیجه کامل برای اسکرین‌شات -->
+        <!-- صفحه نتیجه -->
         <div id="resultScreen" class="hidden">
             <div class="result-page" id="resultPage">
                 <div class="result-header">
@@ -419,9 +544,7 @@
                     <div class="result-subtitle">حلقه اول فارکس | Trading Bot</div>
                 </div>
                 
-                <div class="result-date" id="resultDate">
-                    تاریخ: ۱۴۰۴/۱۱/۲۳
-                </div>
+                <div class="result-date" id="resultDate"></div>
                 
                 <div class="result-section">
                     <div class="result-section-title">
@@ -478,13 +601,27 @@
                 <span>آماده‌سازی برای اسکرین‌شات</span>
             </button>
             
-            <button class="new-btn" onclick="resetJournal()">
-                🔄 ژورنال جدید
+            <button class="new-btn" onclick="goHome()">
+                🏠 بازگشت به صفحه اصلی
             </button>
+        </div>
+        
+        <!-- صفحه تاریخچه -->
+        <div id="historyScreen" class="hidden">
+            <div class="history-page">
+                <div class="history-title">📚 تاریخچه ژورنال‌ها</div>
+                <div id="historyList"></div>
+                <button class="back-btn" onclick="goHome()">
+                    ← بازگشت به صفحه اصلی
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
+        const STORAGE_KEY = 'halgheAvvalJournal_v2';
+        const EXPIRY_DAYS = 30;
+        
         const questions = [
             {
                 q: "از لحاظ روحی و روانی امروز چطور بودی؟",
@@ -571,7 +708,9 @@
         let currentQuestion = 0;
         let answers = {};
         let currentSelection = null;
+        let currentJournalDate = null;
         
+        // تنظیم تاریخ
         const today = new Date();
         const dateStr = today.toLocaleDateString('fa-IR', {
             weekday: 'long',
@@ -581,20 +720,69 @@
         });
         document.getElementById('currentDate').textContent = dateStr;
         
+        // بارگذاری تعداد ژورنال‌ها
+        updateStats();
+        
+        function updateStats() {
+            const journals = getJournals();
+            document.getElementById('journalCount').textContent = journals.length;
+        }
+        
+        function getJournals() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                if (!data) return [];
+                
+                const journals = JSON.parse(data);
+                const now = new Date().getTime();
+                const expiryTime = EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+                
+                // فیلتر کردن ژورنال‌های منقضی شده
+                const validJournals = journals.filter(j => {
+                    return (now - j.timestamp) < expiryTime;
+                });
+                
+                // ذخیره مجدد اگه چیزی حذف شده
+                if (validJournals.length !== journals.length) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(validJournals));
+                }
+                
+                return validJournals.sort((a, b) => b.timestamp - a.timestamp);
+            } catch (e) {
+                return [];
+            }
+        }
+        
+        function saveJournal(journalData) {
+            const journals = getJournals();
+            journals.unshift(journalData);
+            
+            // محدود کردن به ۳۰ ژورنال اخیر
+            if (journals.length > 30) {
+                journals.pop();
+            }
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
+            updateStats();
+        }
+        
         function startJournal() {
             currentQuestion = 0;
             answers = {};
-            document.getElementById('startScreen').classList.add('hidden');
+            currentJournalDate = new Date().toISOString();
+            
+            document.getElementById('homeScreen').classList.add('hidden');
             document.getElementById('questionScreen').classList.remove('hidden');
             document.getElementById('answersContainer').innerHTML = '';
             document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('historyScreen').classList.add('hidden');
             
             showQuestion();
         }
         
         function showQuestion() {
             if (currentQuestion >= questions.length) {
-                showResults();
+                finishJournal();
                 return;
             }
             
@@ -671,38 +859,37 @@
             document.getElementById('progressBar').style.width = progress + '%';
         }
         
-        function showResults() {
-            document.getElementById('progressBar').style.width = '100%';
-            document.getElementById('questionScreen').classList.add('hidden');
-            document.getElementById('mainHeader').classList.add('hidden');
-            document.getElementById('dateBox').classList.add('hidden');
-            document.getElementById('progressBarContainer').classList.add('hidden');
-            document.getElementById('answersContainer').classList.add('hidden');
-            document.getElementById('resultScreen').classList.remove('hidden');
+        function finishJournal() {
+            // تحلیل نتایج
+            const analysis = analyzeResults();
             
-            // پر کردن صفحه نتیجه
-            document.getElementById('resultDate').textContent = `تاریخ: ${dateStr}`;
+            // ذخیره در حافظه
+            const journalData = {
+                id: Date.now(),
+                date: dateStr,
+                timestamp: new Date().getTime(),
+                answers: answers,
+                analysis: analysis,
+                expiryDate: new Date().getTime() + (EXPIRY_DAYS * 24 * 60 * 60 * 1000)
+            };
             
-            // سوالات و جواب‌ها
-            const questionsHtml = questions.map((q, i) => {
-                const ans = answers[q.key];
-                const answerText = ans ? (ans.text || ans.value) : '-';
-                return `
-                    <div class="result-item question">
-                        <div class="result-item-label">سوال ${i + 1}</div>
-                        <div class="result-item-text"><strong>${q.q}</strong></div>
-                        <div class="result-item-text" style="color: #00d4ff; margin-top: 5px;">→ ${answerText}</div>
-                    </div>
-                `;
-            }).join('');
-            document.getElementById('resultQuestions').innerHTML = questionsHtml;
+            saveJournal(journalData);
             
-            // تحلیل
+            // نمایش نتیجه
+            showResultScreen(analysis, dateStr);
+        }
+        
+        function analyzeResults() {
             const strengths = [];
             const weaknesses = [];
             const suggestions = [];
             let needMentor = false;
             let mentorReasons = [];
+            let totalScore = 0;
+            
+            Object.values(answers).forEach(ans => {
+                totalScore += ans.score || 0;
+            });
             
             if (answers.mental_state?.score >= 1) strengths.push('وضعیت روحی مناسب برای معامله‌گری');
             else if (answers.mental_state?.score < 0) {
@@ -755,27 +942,65 @@
                 mentorReasons.push('سوالات آموزشی');
             }
             
-            // نمایش نقاط قوت
-            document.getElementById('resultStrengths').innerHTML = strengths.length > 0 
-                ? strengths.map(s => `
+            const mentorText = needMentor 
+                ? `✅ بله، با منتور شخصی تماس بگیر.\n\n📋 موارد:\n${mentorReasons.map(r => '• ' + r).join('\n')}`
+                : '✓ فعلاً نیازی نیست، ولی منتور در دسترس است.';
+            
+            return {
+                strengths,
+                weaknesses,
+                suggestions,
+                needMentor,
+                mentorText,
+                mentorReasons,
+                totalScore
+            };
+        }
+        
+        function showResultScreen(analysis, date, isHistory = false) {
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('historyScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            document.getElementById('resultDate').textContent = `تاریخ: ${date}`;
+            
+            // سوالات و جواب‌ها
+            const questionsHtml = questions.map((q, i) => {
+                const ans = answers[q.key];
+                const answerText = ans ? (ans.text || ans.value) : '-';
+                return `
+                    <div class="result-item question">
+                        <div class="result-item-label">سوال ${i + 1}</div>
+                        <div class="result-item-text"><strong>${q.q}</strong></div>
+                        <div class="result-item-text" style="color: #00d4ff; margin-top: 5px;">→ ${answerText}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('resultQuestions').innerHTML = questionsHtml;
+            
+            // نقاط قوت
+            document.getElementById('resultStrengths').innerHTML = analysis.strengths.length > 0 
+                ? analysis.strengths.map(s => `
                     <div class="result-item strength">
                         <div class="result-item-text">✓ ${s}</div>
                     </div>
                 `).join('')
                 : '<div class="result-item"><div class="result-item-text">-</div></div>';
             
-            // نمایش نقاط ضعف
-            document.getElementById('resultWeaknesses').innerHTML = weaknesses.length > 0
-                ? weaknesses.map(w => `
+            // نقاط ضعف
+            document.getElementById('resultWeaknesses').innerHTML = analysis.weaknesses.length > 0
+                ? analysis.weaknesses.map(w => `
                     <div class="result-item weakness">
                         <div class="result-item-text">✗ ${w}</div>
                     </div>
                 `).join('')
                 : '<div class="result-item"><div class="result-item-text" style="color: #00ff88;">✓ عالی! نقاط ضعف خاصی نیست</div></div>';
             
-            // نمایش پیشنهادات
-            document.getElementById('resultSuggestions').innerHTML = suggestions.length > 0
-                ? suggestions.map(s => `
+            // پیشنهادات
+            document.getElementById('resultSuggestions').innerHTML = analysis.suggestions.length > 0
+                ? analysis.suggestions.map(s => `
                     <div class="result-item suggestion">
                         <div class="result-item-text">• ${s}</div>
                     </div>
@@ -783,18 +1008,69 @@
                 : '<div class="result-item"><div class="result-item-text" style="color: #ffd700;">• روند عالی! ادامه بده</div></div>';
             
             // مشاوره
-            const mentorText = needMentor 
-                ? `✅ بله، با منتور شخصی تماس بگیر.\n\n📋 موارد:\n${mentorReasons.map(r => '• ' + r).join('\n')}`
-                : '✓ فعلاً نیازی نیست، ولی منتور در دسترس است.';
+            document.getElementById('resultMentorText').textContent = analysis.mentorText;
             
-            document.getElementById('resultMentorText').textContent = mentorText;
-            
-            // اسکرول به بالا
             window.scrollTo(0, 0);
         }
         
+        function showHistory() {
+            const journals = getJournals();
+            const listContainer = document.getElementById('historyList');
+            
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('historyScreen').classList.remove('hidden');
+            
+            if (journals.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-history">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📭</div>
+                        <div>هنوز ژورنالی ثبت نشده</div>
+                        <div style="font-size: 13px; margin-top: 10px; color: #888;">ژورنال‌های شما به مدت ۳۰ روز اینجا نمایش داده می‌شوند</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const now = new Date().getTime();
+            
+            listContainer.innerHTML = journals.map((j, index) => {
+                const daysLeft = Math.ceil((j.expiryDate - now) / (1000 * 60 * 60 * 24));
+                const profitIcon = j.analysis.totalScore > 0 ? '📈' : j.analysis.totalScore < 0 ? '📉' : '⚖️';
+                
+                return `
+                    <div class="history-item" onclick="viewHistoryItem(${j.id})">
+                        <div class="history-date">${profitIcon} ${j.date}</div>
+                        <div class="history-summary">
+                            ${j.analysis.strengths.length} نقطه قوت | 
+                            ${j.analysis.weaknesses.length} نقطه ضعف | 
+                            ${j.analysis.needMentor ? 'نیاز به مشاوره' : 'بدون نیاز به مشاوره'}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <span class="history-score">امتیاز: ${j.analysis.totalScore > 0 ? '+' : ''}${j.analysis.totalScore}</span>
+                            <span style="color: ${daysLeft < 3 ? '#ff4757' : '#888'}; font-size: 11px;">
+                                ${daysLeft} روز تا حذف
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function viewHistoryItem(id) {
+            const journals = getJournals();
+            const journal = journals.find(j => j.id === id);
+            
+            if (!journal) {
+                alert('❌ این ژورنال دیگر موجود نیست (ممکن است منقضی شده باشد)');
+                showHistory();
+                return;
+            }
+            
+            answers = journal.answers;
+            showResultScreen(journal.analysis, journal.date, true);
+        }
+        
         function prepareForScreenshot() {
-            // مخفی کردن دکمه‌ها برای اسکرین‌شات تمیز
             const btn = document.querySelector('.screenshot-btn');
             const newBtn = document.querySelector('.new-btn');
             const hint = document.querySelector('.hint-box');
@@ -805,7 +1081,6 @@
             
             alert('📸 صفحه آماده است!\n\nاسکرین‌شات بگیرید:\n• اندروید: دکمه پاور + ولوم پایین\n• آیفون: دکمه پاور + ولوم بالا\n\nبعد از ذخیره، صفحه رفرش می‌شود.');
             
-            // بعد از ۳ ثانیه برگرداندن دکمه‌ها
             setTimeout(() => {
                 btn.style.display = 'flex';
                 newBtn.style.display = 'block';
@@ -813,8 +1088,20 @@
             }, 3000);
         }
         
-        function resetJournal() {
-            location.reload();
+        function goHome() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('historyScreen').classList.add('hidden');
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('homeScreen').classList.remove('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            
+            // پاک کردن موقت
+            document.getElementById('answersContainer').innerHTML = '';
+            document.getElementById('progressBar').style.width = '0%';
+            
+            currentQuestion = 0;
+            answers = {};
+            currentSelection = null;
         }
     </script>
 </body>
